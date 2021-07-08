@@ -5,38 +5,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Гра "Перший мільйон"</title>
-    
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <h1>Перший мільйон</h1>
-    <p id="name"></p>
-    <p id="points"></p>
-    <div>
-        <p id="question"></p>
-        <button id="answer0" onclick="answer(0)"></button>
-        <button id="answer1" onclick="answer(1)"></button>
-        <button id="answer2" onclick="answer(2)"></button>
-        <button id="answer3" onclick="answer(3)"></button>
+    <div class="game">
+
+        <h1>Перший мільйон</h1>
+        <p id="name"></p>
+        <p id="points"></p>
+        <div class="questions">
+            <p id="question"></p>
+            <button id="answer0" onclick="answer(0)"></button>
+            <button id="answer1" onclick="answer(1)"></button>
+            <button id="answer2" onclick="answer(2)"></button>
+            <button id="answer3" onclick="answer(3)"></button>
+        </div>
+
+        <div class="hints">
+            <p>Підказки</p>
+            <p id="hintsText"></p>
+            <button id="hint1" onclick="hint(1)">50 / 50</button>
+            <button id="hint2" onclick="hint(2)">Дзвінок другу</button>
+            <button id="hint3" onclick="hint(3)">Допомога залу</button>
+        </div>
+        <br>
+        <div>
+            <button id="takeMoney" onclick="takeMoney()">Забрати гроші</button>
+        </div>
     </div>
 
-    <div class="hints">
-        <p>Підказки</p>
-        <button id="hint1" onclick="hint(1)">50 / 50</button>
-        <button id="hint2" onclick="hint(2)">Дзвінок другу</button>
-        <button id="hint3" onclick="hint(3)">Допомога залу</button>
-    </div>
-    <br>
-    <div>
-        <button id="takeMoney" onclick="takeMoney()">Забрати гроші</button>
-    </div>
-
-
-    <!-- <div id="winner" style="z-index: -1; width: 50%; height: 500px; background-color: aqua; visibility: hidden;">Ви виграли</div> -->
 
 
 
-    <script src="script1.js"></script>
+
+    <script src="script.js"></script>
 </body>
 
 </html>

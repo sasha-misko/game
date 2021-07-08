@@ -1,5 +1,6 @@
-let player;
+let player, currenQuestion, askedQuestions = [];
 let summs = [100, 200, 300, 500, 1000, 2000, 4000, 8000, 16000, 32000, 64000, 125000, 250000, 500000, 1000000];
+let playerPoints = document.getElementById("points");
 
 let questions = [
   {
@@ -79,76 +80,14 @@ let questions = [
   }
 ]; //let questions
 
-
-
-function generateQuestion(currenQuestion, hint) {
-
-  let quest = player.name + " У вас на рахунку " + player.amount + ". Незгораєма сума " + player.nonAmount + "\n\n";
-  quest += currenQuestion.question + "\n"; //Запитання
-  let len = currenQuestion.answers.length;
-
-  if (hint == undefined) {
-    for (i = 0; i < len; i++) {
-      quest += i + ". " + currenQuestion.answers[i] + "\n"; //Відповіді
-    }
-
-    if (player.hint == false) {
-      quest += len + ". Підказка 50/50";
-    }
-  }
-
-  else {
-    let randAnswer = Math.floor(Math.random() * len);
-    let trueAnswer = currenQuestion.trueAnswer;
-    while (randAnswer == trueAnswer) {
-      randAnswer = Math.floor(Math.random() * len);
-    }
-
-    if (trueAnswer < randAnswer) {
-      quest += trueAnswer + "." + currenQuestion.answers[trueAnswer] + "\n";
-      quest += randAnswer + "." + currenQuestion.answers[randAnswer] + "\n";
-    }
-    else{
-      quest += randAnswer + "." + currenQuestion.answers[randAnswer] + "\n";
-      quest += trueAnswer + "." + currenQuestion.answers[trueAnswer] + "\n";
-    }
-  }
-
-  return quest;
-
+function win() {
+  alert("Вітаємо " + player.name + ". Ви виграли 1 000 000");
+  if (confirm("Почати гру заново?")) {
+    newGame();
+  };
 }
 
-function askQuestion() {
-  num = Math.floor(Math.random() * questions.length);
-  let currenQuestion = questions[num];
-  let ans = +prompt(generateQuestion(currenQuestion));
-  let len = currenQuestion.answers.length;
-
-
-  if (ans == len && player.hint == false) {
-    player.hint = true;
-    ans = +prompt(generateQuestion(questions[num], "hint"));
-  }
-
-  return (ans == currenQuestion.trueAnswer);
-}
-
-
-function game() {
-
-  while (askQuestion()) {
-    player.amount = summs[player.answeredQuestions];
-    player.answeredQuestions++;
-
-    player.nonAmount = player.answeredQuestions >= 5 && player.answeredQuestions < 10 ? 1000 : player.nonAmount;
-    player.nonAmount = player.answeredQuestions >= 10 && player.answeredQuestions < 15 ? 32000 : player.nonAmount;
-    player.nonAmount = player.answeredQuestions == 15 ? 1000000 : player.nonAmount;
-
-    if (player.answeredQuestions == summs.length) {
-      break;
-    }
-  }
-
+function gameOver() {
   if (player.nonAmount > 0) {
     alert("Вітаємо " + player.name + ". Ви виграли " + player.nonAmount + " грн.");
   }
@@ -159,24 +98,110 @@ function game() {
   if (confirm("Почати гру заново?")) {
     newGame();
   };
+}
 
+function takeMoney() {
+  alert("Вітаємо. Ви виграли " + player.amount + " грн.");
+  if (confirm("Почати гру заново?")) {
+    newGame();
+  };
+}
+
+function hint(hintNumber) {
+  let trueAnswer = currenQuestion.trueAnswer;
+  let randAnswer = Math.floor(Math.random() * 4);
+  while (randAnswer == trueAnswer) {
+    randAnswer = Math.floor(Math.random() * 4);
+  }
+  document.getElementById("hint" + hintNumber).setAttribute('disabled', true);
+
+
+  switch (hintNumber) {
+    case 1:
+      for (let i = 0; i < 4; i++) {
+        if (i != randAnswer && i != trueAnswer) {
+          document.getElementById("answer" + i).style = "visibility: hidden";
+        }
+      }
+      break;
+
+    case 2:
+      //У 80% друг правий
+      let friendAnswer = Math.floor(Math.random() * 11) < 9 ? trueAnswer : randAnswer;
+      document.getElementById("hintsText").innerText = "Друг думає що це № " + ++friendAnswer;
+      break;
+
+    case 3:
+      break;
+
+    default:
+      break;
+  }
+
+}
+
+function answer(q) {
+  if (q != currenQuestion.trueAnswer) {
+    return gameOver();
+  };
+
+  player.amount = summs[player.answeredQuestions];
+  if (player.amount == 1000 || player.amount == 32000) {
+    player.nonAmount = player.amount;
+  }
+  player.answeredQuestions++;
+
+  playerPoints.innerText = " У вас на рахунку " + player.amount + ". Неспалима сума " + player.nonAmount;
+
+  if (player.answeredQuestions == summs.length) {
+    win();
+  }
+  else {
+    generateQuestion();
+  }
+}
+
+function generateQuestion() {
+  for (let i = 0; i < 4; i++) {
+    document.getElementById("answer" + i).style = "visibility: visible";
+  }
+
+  num = Math.floor(Math.random() * questions.length);
+  while (askedQuestions.includes(num)) {
+    num = Math.floor(Math.random() * questions.length);
+  }
+  askedQuestions.push(num);
+
+  currenQuestion = questions[num];
+  document.getElementById("question").innerText = currenQuestion.question;
+
+  for (i = 0; i < 4; i++) {
+    let butt = "answer" + i;
+    document.getElementById(butt).innerText = (i + 1) + ". " + currenQuestion.answers[i];
+  }
+  document.getElementById("hintsText").innerText = "";
 }
 
 function createPlayer() {
   let name = prompt("Введіть ваше ім'я");
-  document.getElementById("name").innerText = name;
+  // let name = "Саша";
+  document.getElementById("name").innerText = "Ім'я гравця - " + name;
   return {
     name,
     amount: 0,
     nonAmount: 0,
-    answeredQuestions: 0,
-    hint: false
+    answeredQuestions: 0
   }
 }
 
 function newGame() {
+  document.getElementById("hint1").removeAttribute('disabled');
+  document.getElementById("hint2").removeAttribute('disabled');
+  document.getElementById("hint3").removeAttribute('disabled');
+  askedQuestions = [];
   player = createPlayer();
-  game();
+  playerPoints.innerText = " У вас на рахунку " + player.amount + ". Неспалима сума " + player.nonAmount;
+  generateQuestion();
 }
 
 newGame();
