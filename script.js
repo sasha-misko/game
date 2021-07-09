@@ -107,6 +107,16 @@ function takeMoney() {
   };
 }
 
+
+function hideThis(hide){
+  document.getElementById(hide).style.visibility = 'hidden';
+}
+
+function showThis(textToShow){
+  document.getElementById("blockToShow").firstElementChild.innerText = textToShow;
+  document.getElementById("blockToShow").style.visibility = "visible";
+}
+
 function hint(hintNumber) {
   let trueAnswer = currenQuestion.trueAnswer;
   let randAnswer = Math.floor(Math.random() * 4);
@@ -128,10 +138,27 @@ function hint(hintNumber) {
     case 2:
       //У 80% друг правий
       let friendAnswer = Math.floor(Math.random() * 11) < 9 ? trueAnswer : randAnswer;
-      document.getElementById("hintsText").innerText = "Друг думає що це № " + ++friendAnswer;
+      showThis("Друг думає що це № " + ++friendAnswer);
       break;
 
     case 3:
+      // Правильна відповідь завжди в діапазоні 40-60%
+      let answerTrue = Math.floor(Math.random() * (61 - 40) ) + 40;
+      let remains = 100;
+      remains -= answerTrue;
+      let viewersHelp = "";
+
+      for (let i = 0; i < 4; i++) {
+        if(i == trueAnswer){
+          viewersHelp += `${i+1}. - ${answerTrue}% \n`;
+        }
+        else{
+          let answer = i != 3 ? Math.floor(Math.random() * remains): remains;
+          remains -=answer;
+          viewersHelp += `${i+1}. - ${answer}% \n`;
+        }
+      }
+      showThis(viewersHelp);
       break;
 
     default:
@@ -179,12 +206,11 @@ function generateQuestion() {
     let butt = "answer" + i;
     document.getElementById(butt).innerText = (i + 1) + ". " + currenQuestion.answers[i];
   }
-  document.getElementById("hintsText").innerText = "";
 }
 
 function createPlayer() {
   let name = prompt("Введіть ваше ім'я");
-  // let name = "Саша";
+  if(!name){name = "Player"};
   document.getElementById("name").innerText = "Ім'я гравця - " + name;
   return {
     name,
