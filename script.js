@@ -83,7 +83,7 @@ let questions = [
 function win() {
   alert("Вітаємо " + player.name + ". Ви виграли 1 000 000");
   if (confirm("Почати гру заново?")) {
-    newGame();
+    return newGame();
   };
 }
 
@@ -96,25 +96,15 @@ function gameOver() {
   }
 
   if (confirm("Почати гру заново?")) {
-    newGame();
+    return newGame();
   };
 }
 
 function takeMoney() {
   alert("Вітаємо. Ви виграли " + player.amount + " грн.");
   if (confirm("Почати гру заново?")) {
-    newGame();
+    return newGame();
   };
-}
-
-
-function hideThis(hide){
-  document.getElementById(hide).style.visibility = 'hidden';
-}
-
-function showThis(textToShow){
-  document.getElementById("blockToShow").firstElementChild.innerText = textToShow;
-  document.getElementById("blockToShow").style.visibility = "visible";
 }
 
 function hint(hintNumber) {
@@ -138,7 +128,7 @@ function hint(hintNumber) {
     case 2:
       //У 80% друг правий
       let friendAnswer = Math.floor(Math.random() * 11) < 9 ? trueAnswer : randAnswer;
-      showThis("Друг думає що це № " + ++friendAnswer);
+      alert("Друг думає що це № " + ++friendAnswer);
       break;
 
     case 3:
@@ -158,7 +148,7 @@ function hint(hintNumber) {
           viewersHelp += `${i+1}. - ${answer}% \n`;
         }
       }
-      showThis(viewersHelp);
+      alert(viewersHelp);
       break;
 
     default:
